@@ -3,13 +3,14 @@
 ![](https://github.com/astarte-platform/astarte/workflows/Build%20and%20Test%20Astarte%20Apps/badge.svg?branch=master)
 [![codecov](https://codecov.io/gh/astarte-platform/astarte/tree/master/graph/badge.svg)](https://codecov.io/gh/astarte-platform/astarte)
 
-<img src="doc/images/mascotte.svg" align="left" width="160px" />Astarte is an Open Source IoT
+<img src="doc/images/mascotte.svg" align="left" width="160px" />Astarte is the Open Source IoT
 platform focused on Data management and processing written in [Elixir](https://github.com/elixir-lang/elixir).
-It is a turnkey solution which packs in everything you need for connecting a device fleet to a set of
-remote applications and process data as it flows through a set of built-in features.
 
-It performs data modeling, automated data reduction, real-time events,
-and provides you with any feature you might expect in a modern IoT platform.
+It is a turnkey solution that packs in everything you need for connecting a device fleet to a set of
+remote applications and processing data as it flows through a set of built-in features.
+
+It performs data modeling and automated data reduction, handles real-time events
+and provides you with any feature you might expect from a modern IoT platform.
 
 Astarte builds on top of amazing Open Source projects such as [RabbitMQ](https://www.rabbitmq.com/)
 and [Cassandra](http://cassandra.apache.org/)/[ScyllaDB](https://www.scylladb.com/).
@@ -22,7 +23,7 @@ and [Cassandra](http://cassandra.apache.org/)/[ScyllaDB](https://www.scylladb.co
    Astarte cluster(s).
  * [Astarte Kubernetes Operator](https://github.com/astarte-platform/astarte-kubernetes-operator) -
    The preferred and supported way to run Astarte - in Production, and pretty much anywhere else.
- * Device SDKs - Connect your device to Astarte in a few lines of code. Available for
+ * [Device SDKs](https://github.com/astarte-platform?q=sdk&type=all&language=&sort=) - Connect your device to Astarte in a few lines of code. Available for
    [Python](https://github.com/astarte-platform/astarte-device-sdk-python),
    [Qt5](https://github.com/astarte-platform/astarte-device-sdk-qt5),
    [ESP32](https://github.com/astarte-platform/astarte-device-sdk-esp32),
@@ -46,14 +47,12 @@ $ docker compose up -d
 
 Make sure to use the latest stable release if you want a flawless experience.
 
-You should be up and running in a matter of minutes. If you want a more thorough explanation and
-find out how to access your new Astarte cluster and what you can do with it, [follow our "Astarte in
-5 minutes" tutorial](https://docs.astarte-platform.org/astarte/latest/010-astarte_in_5_minutes.html) to
-get some fake or real devices to stream and process data while your tea gets ready.
+You should be up and running in a matter of minutes. If you want a more thorough explanation and to learn how to access your new Astarte cluster, along with discovering what you can do with it, [follow our "Astarte in 5 minutes" tutorial](https://docs.astarte-platform.org/astarte/latest/010-astarte_in_5_minutes.html) and
+get real or fake devices to stream and process data while your tea gets ready.
 
 ## Sweet! Let's move it to production!
 
-Whoa, not so fast. Putting together an Astarte instance which can handle your data might be
+Whoa, not so fast. Putting together an Astarte instance that can handle your data might be
 tricky, and requires some knowledge about the platform to make sure it won't break.
 
 So, if you're serious about getting Astarte in your production environment, you might want to learn
@@ -67,7 +66,7 @@ Manual](https://docs.astarte-platform.org/astarte-kubernetes-operator/latest/001
 
 Astarte is designed from the ground up to be run in containers, with
 [Kubernetes](https://github.com/kubernetes/kubernetes) as a first-class citizen when it comes to
-deployment. Astarte's images can be found at [Docker Hub](https://hub.docker.com/u/astarte/), with
+deployment. Astarte images can be found at [Docker Hub](https://hub.docker.com/u/astarte/), with
 every Astarte service coming with its own image.
 
 With the help of our [Kubernetes
@@ -77,9 +76,9 @@ to your favorite cloud provider in a matter of minutes.
 
 ## Looks great! I want to contribute!
 
-That's awesome! Astarte is quite young as an Open Source project, so we're still setting up bits and
-pieces to make contributions easier and more effective, such as a shared roadmap, a proper
-contributor guide. For the time being, you can head over to the repository you want to contribute to
+That's awesome! Astarte is developed by a professional team coming from all over the world.
+
+If you want to join us in our effort to build an Open Source IoT Platform [unironically](https://github.com/astarte-platform/astarte/issues/24), you can head over to the repository you want to contribute to
 and set up a Pull Request. We're using [DCO](https://developercertificate.org/) for our
 contributions, so you'll need to sign off all commit messages before submitting a Pull Request.
 
@@ -92,17 +91,22 @@ philosophy, and have some tests.
 
 ## Any chance I can get a hosted and managed instance?
 
-Yup, stay tuned :) or get in touch with us.
+You may want to check [Astarte Cloud](https://console.astarte.cloud/). This environment is dedicated to PoC validation and
+is a free and safe playground for developers, before moving to production.
+It provides you with the Astarte Dashboard by default, thus easing your way into learning Astarte's inner workings.
+Make sure to ping us (see contacts below) to speed up the user acceptance process.
+
+If you're looking to move to production and feel you could use our help, please read below.
 
 ## I need some help with my installation! Where can I get commercial support?
 
-Glad you asked. Astarte is developed by SECO Mind, who fuels its development thanks to the
-generosity of many customers running it in production. Besides consultancy, installation,
-maintenance, long-term support and customizations, SECO Mind also commercializes Astarte Enterprise,
-an Astarte variant packing in some additional goodies and features.
+Glad you asked. Astarte is developed by SECO Mind thanks to the generosity
+of numerous customers who run it in production. Besides product development, SECO Mind also
+provides consultancy, installation, maintenance, long-term support and customizations,
+including some additional goodies and specific use-case features.
 
 [Get in touch](https://astarte.cloud/contactus) or [contact us via email](mailto:info@secomind.com)
-to find out how we can help you in getting Astarte in its best possible shape for your specific
+to find out how we can help you get Astarte in its best possible shape for your specific
 needs.
 
 # License
