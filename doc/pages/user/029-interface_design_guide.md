@@ -2,13 +2,13 @@
 
 Before we begin, let's get this straight:
 
-> **The way you design your interfaces will determine the overall performance and efficiency of your cluster**
+> **The way you design your interfaces will determine the overall performance and efficiency of your cluster.**
 
 This is because interfaces define not only the way data is exchanged between Astarte and Devices/Applications, but also **how it will be stored, managed and queried**. As such, it is fundamental to spend enough time on finding the most correct Interface design for your use case, keeping in mind how your users will consume your data, what might change in the future, what is fundamental and what is optional, and more.
 
 ## Use the right tools
 
-Before you begin, you might want to take a look at [Astarte Interfaces Editor](https://interfaces-editor.astarte-platform.org), which is also available in any Astarte Dashboard installation. Astarte Interfaces Editor gives you automated validation and linting for Astarte Interfaces, and also gives you a declarative editor with automatic JSON generation. It is well maintained and used as a reference for Interface design. Consider using it for building your interfaces.
+Before you begin, you might want to take a look at the [Astarte Interface Editor](https://interfaces-editor.astarte-platform.org), which is also available in any Astarte Dashboard installation. Astarte Interfaces Editor gives you automated validation and linting for Astarte Interfaces, and also gives you a declarative editor with automatic JSON generation. It is well maintained and used as a reference for Interface design. Consider using it for building your interfaces.
 
 ## Rationale
 
@@ -18,7 +18,7 @@ Without going into deeper details on what concerns Astarte's DB internals, there
 
 Astarte's data modeling is designed to optimize queries within a single interface. Querying across interfaces is supported, but might affect performances significantly, especially if done frequently and with complex queries. This is especially true for triggers, as they could be evaluated very frequently.
 
-In general, if you plan on having different mappings which are frequently queried altogether, or dependent on each other for several triggers, you might be better off in having them all in the same Interface.
+In general, if you anticipate frequently querying different mappings together or if they are dependent on each other for several triggers, you might find it advantageous to have them all within the same Interface.
 
 ### Aggregation makes a difference
 
@@ -30,4 +30,4 @@ Moreover, in terms of data modeling, Aggregated interfaces imply the creation of
 
 Rule of thumb:
 
-> Favor extreme atomicity in case you expect your interfaces to change often, be as atomic as reasonably possible in case you want to favor performance and flexibility in querying data.
+> Favor extreme atomicity if you expect your interfaces to change often, be as atomic as reasonably possible if you prioritize performance and flexibility in querying data.
