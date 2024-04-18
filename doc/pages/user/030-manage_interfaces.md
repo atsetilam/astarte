@@ -89,7 +89,7 @@ $ astartectl realm-management interfaces show com.my.Interface1 0
       {
         "type": "integer",
         "path": "/myBetterValue",
-        "description": "A better revision, introduced in minor 2, supported only by some devices"
+        "description": "A better revision, introduced in minor 2, supported only by some devices."
       },
       {
         "type": "boolean",
@@ -105,8 +105,8 @@ $ astartectl realm-management interfaces show com.my.Interface1 0
 
 ### Get Interface Definition using Astarte Dashboard
 
-From the Interfaces page, click on an Interface name, and click on the Major version for which you'd
-like to see the definition. The Interfaces Editor window will open, with the Interface definition in
+From the Interfaces page, click on an Interface name, and click on the Major version which you'd
+like to see the definition of. The Interfaces Editor window will open, with the Interface definition in
 the text box on the right. From the Editor page, it is also possible to add new mappings to the
 Interface and bump it to a new Minor.
 
@@ -130,7 +130,7 @@ Interface and bump it to a new Minor.
       {
         "type": "integer",
         "path": "/myBetterValue",
-        "description": "A better revision, introduced in minor 2, supported only by some devices"
+        "description": "A better revision, introduced in minor 2, supported only by some devices."
       },
       {
         "type": "boolean",
@@ -144,12 +144,12 @@ Interface and bump it to a new Minor.
 }
 ```
 
-## Installing/Updating an interface
+## Installing/Updating an Interface
 
 Interfaces are supposed to change over time, and are dynamic. As such, they can be installed and
-updated. Interface installation means adding either a whole new Interface (as in: an Interface with
-a new name), or a new major version of an already known Interface. Interface update means updating a
-specific, existing interface name/major version with a new minor version.
+updated. Interface installation means either adding a whole new Interface (as in: an Interface with
+a new name), or a new major version of a known Interface. Interface update means updating a
+specific, existing Interface name/major version with a new minor version.
 
 When designing interfaces, it is strongly advised to use Astarte Interface Editor. The Editor is
 embedded into any Astarte Dashboard installation but, in case your Astarte installation does not
@@ -158,7 +158,7 @@ instance](https://interfaces-editor.astarte-platform.org). Use it to write and v
 definitions, and install the resulting JSON file through either `astartectl` or Realm Management
 APIs.
 
-### Synchronizing interfaces using astartectl
+### Synchronizing Interfaces using astartectl
 
 `astartectl` provides a handy `sync` command that, given a list of Interface files, will synchronize
 the state of the Astarte Realm with your local interfaces. It is handy in those cases where your
@@ -212,13 +212,13 @@ ok
 Realm Management currently implements a completely asynchronous API for Interface installation - as
 such, the only feedback received by the API is that the Interface is valid and the request was
 accepted by the backend. However, this is no guarantee that the Interface will be installed
-successfully. As a best practice, it is advised to either wait a few seconds in between Realm
-Management API invocations, or verify through a `GET` operation whether the Interface has been
+successfully. As a best practice, it is advisable to either wait a few seconds in between Realm
+Management API invocations or verify through a `GET` operation whether the Interface has been
 installed or not.
 
 `POST <astarte base API URL>/realmmanagement/v1/test/interfaces`
 
-The POST request must have the following request body, with content type `application/json`
+The POST request must have the following request body, with content type `application/json`:
 
 ```json
 {
@@ -252,8 +252,8 @@ The POST request must have the following request body, with content type `applic
 
 The call will return either `201 Created` or an error. Most common failure cases are:
 
-* The interface/major combination already exists in the Realm
-* The interface schema fails validation
+* The interface/major combination already exists in the Realm;
+* The interface schema fails validation.
 
 In any case, the API returns details on what caused the error and how to solve it through Astarte's
 standard error reply schema.
@@ -402,5 +402,5 @@ recent version might have been installed in the realm.
 
 A device might arbitrarly decide to remove an interface from its introspection. In such a case,
 Astarte won't return any data and will consider all data previously pushed to said interface
-inaccessible. In case the interface comes back again in the introspection, previously pushed data
-will be available as if nothing happened.
+inaccessible. In case the interface reappears in the introspection, previously pushed data
+will be available as if nothing had happened.
