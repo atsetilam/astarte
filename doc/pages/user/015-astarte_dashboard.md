@@ -102,7 +102,7 @@ accessible via the navigation links in the Dashboard's side menu.
 exchanged between Astarte and its peers.
 
 You can navigate to this section thanks to the side menu of the Dashboard. A list of all installed
-interfaces is displayed, together with their major versions.
+interfaces and their major versions is displayed.
 
 ![Astarte Dashboard, interface list](assets/astarte-dashboard-interfaces.png)
 
@@ -129,10 +129,10 @@ and filling in mandatory entries such as:
   semantics.
 
 You can learn more about Interface definitions in their
-[documentation's section](030-interface.html).
+[documentation section](030-interface.html).
 
 Note that when creating interface drafts, or for testing purposes in general, it is recommended to
-use `0` as the major version: to prevent data loss, Astarte allows only interfaces where
+use `0` as the major version: to prevent data loss, Astarte only allows interfaces where
 `major_version` equals `0` to be deleted.
 
 ### Managing interfaces
@@ -148,8 +148,8 @@ interface.
 Note that to prevent data loss, Astarte allows only interfaces where `major_version` equals `0` to
 be deleted.
 
-For similar reasons, when updating the definition of an interface, the Interface Editor will not
-allow you to change core properties on a `minor` version update. If you need to apply substantial
+For similar reasons, when updating the definition of an interface, the Interface Editor will only
+allow incremental additive changes (e.g. adding members) on a `minor` version update. If you need to apply substantial
 changes, you can define and install a new `major` version for the interface.
 
 ## Triggers
@@ -165,7 +165,7 @@ triggers is displayed.
 
 From the Trigger list, clicking on the **Install a new trigger** button will load up the **Trigger
 Editor**, an interactive tool that you can use to configure your triggers. It works in a very
-similar fashion to Interface Editor and shares the same User Interface.
+similar fashion to Interface Editor and shares the same UI.
 
 The Trigger Editor provides you with two ways to define your triggers: on the left panel, a
 graphical frontend, while on the right panel you may input a JSON definition to achieve the same
@@ -176,7 +176,7 @@ providing not only linting and validation, but also dynamic resolution of Interf
 
 ![Astarte Dashboard, Trigger Editor](assets/astarte-dashboard-trigger-editor.png)
 
-You can learn more about Trigger definitions in their [documentation's section](060-triggers.html).
+You can learn more about Trigger definitions in their [documentation section](060-triggers.html).
 
 Note that due to how triggers work, you should install the trigger before a device connects. Doing
 otherwise will cause the trigger to kick in at a later time, and as such no events will be streamed
@@ -220,7 +220,7 @@ Here you can proceed with the registration of the device by:
   of interfaces that the device will use to exchange data.
 
 You can learn more about Devices and the registration process in their
-[documentation's section](035-register_device.html).
+[documentation section](035-register_device.html).
 
 ### Device status and details
 
@@ -234,12 +234,12 @@ Here you can review and manage different info about your device.
   whether the device is currently connected or disconnected, or if it was never connected. From this
   section you can also momentarily **Inhibit credentials** for the device, preventing it to obtain
   access to Astarte; or you can directly **Wipe credential secret** of the device, a permanent
-  action which will require to register the device again to have a new Credential Secret.
+  action which will require a new device registration to get a new Credential Secret.
 - **Aliases**: where you can manage custom aliases for the device. Note that setting a `name` alias
   will provide a name for the device.
 - **Attributes**: a dedicated section to attach arbitrary info to the device, in a key-value form.
 - **Groups**: where you can review and manage the Groups the device belongs to.
-- **Interfaces**: a list of all currently and previously used interfaces. Clicking on an interface's
+- **Interfaces**: a list of all currently and previously used interfaces. Clicking on an interface
   name will load a dedicated page to review data exchanged by the device through that interface.
 - **Stats**: a rundown on exchanged data via different interfaces. Here you can review, in both
   visual and numeric form, the quantity of bytes and messages the device is exchanging over each
@@ -277,7 +277,7 @@ can review the list of devices that belong to it.
 
 To remove a device from a group, click on the Delete icon next to it.
 
-To add a device to a group, you can first navigate to the device's page and then add it to a group
+To add a device to a group, first navigate to the device page and add it to a group
 from there.
 
 To delete a group, remove all devices that belong to it and the group will automatically cease to
@@ -311,7 +311,7 @@ Here you can define the block by specifying:
 Confirm the creation of the block by clicking on the **Create new block** button.
 
 To learn more about block definition you can read their
-[documentation's section](https://docs.astarte-platform.org/flow/snapshot/0003-blocks.html).
+[documentation section](https://docs.astarte-platform.org/flow/snapshot/0003-blocks.html).
 
 ### Managing blocks
 
