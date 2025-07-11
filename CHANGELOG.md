@@ -4,7 +4,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.3.0] - Unreleased
+### Added
+- [astarte_realm_management_api] Allow to list all interfaces definitions using 
+  the `detailed=true` parameter
+- [astarte_import] Added support for data types: `doublearray`, `integerarray`,
+  `booleanarray`, `longintegerarray`, `stringarray`, `datetimearray`, `binaryblobarray`.
+- [astarte_export] Added a new command for exporting by device_id. 
+  `mix astarte.export $REALM $FILE_XML $DEVICE_ID`
+
+## [1.2.1] - Unreleased
+### Changed
+- Update the docker-compose configuration to allow both physical and virtual devices
+  to connect to Astarte, provided that the devices and the host are on the same LAN.
+
+## [1.2.0] - 2024-07-02
+### Fixed
+- Forward port changes from release-1.1 (connection failure when delivering
+  triggers is handled as an error).
+
+## [1.2.0-rc.0] 11-06-2024
 ### Added
 - [astarte_trigger_engine] Add `trigger_name` to envent payload
   and mustache template
@@ -51,6 +70,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - BREAKING: [astarte_realm_management] do not allow installation of interfaces
   where database_retention_ttl exceeds the realm's maximum datastream storage
   retention period, if set.
+
+## [1.1.2] - Unreleased
+### Added
+- [astarte_data_updater_plant] customize the number of consumer connections
+  to the AMQP broker using `DATA_UPDATER_PLANT_AMQP_CONSUMER_CONNECTION_NUMBER`
+  (defult: 10).
+
+### Fixed
+- Forward-port changes from release-1.0 (gracefully handle malformed
+  purge properties messages, fix message count metrics, fix typing issues
+  in payloads).
+- [astarte_data_updater_plant] do not leak consumer channels in corner cases.
+- [astarte_data_updater_plant] do not leak producer channels in corner cases.
+- [astarte_trigger_engine] Always treat event TTL for trigger policies in seconds,
+  not milliseconds.
+- [astarte_trigger_engine] ack messages even with unreachable target (see https://github.com/astarte-platform/astarte/issues/936)
+- [astarte_appengine_api] Handle type casting for `longinteger` inputs
+- [astarte_appengine_api] refactor `device.ex` file - extract `cast_value` functions
+  into `InterfaceValue` module and add tests
 
 ## [1.1.1] - 2023-11-15
 ### Fixed
@@ -106,8 +144,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - [astarte_appengine_api] Return empty data instead of error when querying `properties` interfaces 
   which are not fully populated. Fix [531](astarte-platform#531).
 
-## [1.0.6] - Unreleased
+## [1.0.6] - 2024-04-23
+### Fixed
 - [astarte_appengine_api] Allow to send binaryblobarrays over server owned interfaces.
+- [astarte_appengine_api] Doubles and DoubleArrays without decimal part are no longer saved as 
+  integer, but a trailing zero is added.
+- [astarte_data_updater_plant] Do not crash when receiving a malformed purge properties message.
+- [astarte_pairing_api] Gracefully handle HTTP requests with malformed payload.
+- [astarte_housekeeping_api] Gracefully handle HTTP requests with malformed payload.
+- [astarte_realm_management_api] Gracefully handle HTTP requests with malformed payload.
+- [astarte_appengine_api] Expose exchanged_bytes metrics as `sum` (instead of `counter`).
+- [astarte_pairing] Do not reset total sent messages/bytes when re-registering a device.
+  Fix [#776](https://github.com/astarte-platform/astarte/issues/776).
 
 ## [1.0.5] - 2023-09-26
 ### Fixed

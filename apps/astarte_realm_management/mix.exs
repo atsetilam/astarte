@@ -23,7 +23,7 @@ defmodule Astarte.RealmManagement.Mixfile do
     [
       app: :astarte_realm_management,
       elixir: "~> 1.15",
-      version: "1.2.0-dev",
+      version: "1.3.0-dev",
       elixirc_paths: elixirc_paths(Mix.env()),
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
@@ -85,6 +85,8 @@ defmodule Astarte.RealmManagement.Mixfile do
       {:telemetry_poller, "~> 0.4"},
       {:xandra, "~> 0.13"},
       {:observer_cli, "~> 1.5"},
+      # Fix: re2 1.9.8 to build on arm64
+      {:re2, "~> 1.9.8", override: true},
       {:dialyxir, "~> 1.0", only: [:dev, :ci], runtime: false},
       # Workaround for Elixir 1.15 / ssl_verify_fun issue
       # See also: https://github.com/deadtrickster/ssl_verify_fun.erl/pull/27

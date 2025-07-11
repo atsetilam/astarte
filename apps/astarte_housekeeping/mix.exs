@@ -22,7 +22,7 @@ defmodule Astarte.Housekeeping.Mixfile do
   def project do
     [
       app: :astarte_housekeeping,
-      version: "1.2.0-dev",
+      version: "1.3.0-dev",
       build_path: "_build",
       config_path: "config/config.exs",
       deps_path: "deps",
@@ -79,7 +79,7 @@ defmodule Astarte.Housekeeping.Mixfile do
 
   defp deps do
     [
-      {:xandra, "~> 0.13"},
+      {:xandra, "~> 0.19"},
       {:excoveralls, "~> 0.15", only: :test},
       {:dialyxir, "~> 1.0", only: [:dev, :ci], runtime: false},
       {:plug_cowboy, "~> 2.1"},
@@ -89,6 +89,8 @@ defmodule Astarte.Housekeeping.Mixfile do
       {:telemetry_metrics, "~> 0.4"},
       {:telemetry_poller, "~> 0.4"},
       {:observer_cli, "~> 1.5"},
+      # Fix: re2 1.9.8 to build on arm64
+      {:re2, "~> 1.9.8", override: true},
       # Workaround for Elixir 1.15 / ssl_verify_fun issue
       # See also: https://github.com/deadtrickster/ssl_verify_fun.erl/pull/27
       {:ssl_verify_fun, "~> 1.1.0", manager: :rebar3, override: true}

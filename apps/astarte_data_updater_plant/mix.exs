@@ -23,7 +23,7 @@ defmodule Astarte.DataUpdaterPlant.Mixfile do
     [
       app: :astarte_data_updater_plant,
       elixir: "~> 1.15",
-      version: "1.2.0-dev",
+      version: "1.3.0-dev",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -77,10 +77,14 @@ defmodule Astarte.DataUpdaterPlant.Mixfile do
   defp deps do
     [
       {:amqp, "~> 3.3"},
-      {:castore, "~> 0.1.0"},
+      {:castore, "~> 1.0.0"},
       {:cyanide, "~> 2.0"},
       {:excoveralls, "~> 0.15", only: :test},
+      {:mississippi, github: "secomind/mississippi"},
       {:mox, "~> 1.0", only: :test},
+      # hex.pm package and esl/ex_rabbit_pool do not support amqp version 2.1.
+      # This fork is supporting amqp ~> 2.0 and also ~> 3.0.
+      {:ex_rabbit_pool, github: "simplebet/ex_rabbit_pool", ref: "latest-amqp"},
       {:pretty_log, "~> 0.1"},
       {:plug_cowboy, "~> 2.1"},
       {:telemetry_metrics_prometheus_core, "~> 0.4"},
@@ -90,6 +94,8 @@ defmodule Astarte.DataUpdaterPlant.Mixfile do
       {:skogsra, "~> 2.2"},
       {:telemetry, "~> 0.4"},
       {:observer_cli, "~> 1.5"},
+      # Fix: re2 1.9.8 to build on arm64
+      {:re2, "~> 1.9.8", override: true},
       {:dialyxir, "~> 1.0", only: [:dev, :ci], runtime: false},
       # Workaround for Elixir 1.15 / ssl_verify_fun issue
       # See also: https://github.com/deadtrickster/ssl_verify_fun.erl/pull/27

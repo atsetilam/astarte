@@ -1,4 +1,4 @@
-FROM hexpm/elixir:1.15.7-erlang-25.3.2.7-debian-bullseye-20231009-slim as builder
+FROM hexpm/elixir:1.15.7-erlang-25.3.2.7-debian-bullseye-20231009-slim AS builder
 
 # install build dependencies
 # --allow-releaseinfo-change allows to pull from 'oldstable'
@@ -9,8 +9,8 @@ WORKDIR /app
 
 # Install hex
 RUN mix local.hex --force && \
-mix local.rebar --force && \
-mix hex.info
+    mix local.rebar --force && \
+    mix hex.info
 
 # Pass --build-arg BUILD_ENV=dev to build a dev image
 ARG BUILD_ENV=prod
@@ -35,14 +35,14 @@ WORKDIR /app
 RUN apt-get -qq update
 
 # Set the locale
-ENV LANG C.UTF-8
+ENV LANG=C.UTF-8
 
 # We need SSL
 RUN apt-get -qq install libssl1.1
 
 # We have to redefine this here since it goes out of scope for each build stage
 ARG BUILD_ENV=prod
-
+COPY ./run_export.sh /app/
 COPY --from=builder /app/_build/$BUILD_ENV/rel/astarte_export .
 
-CMD ["sh", "-c", "./bin/astarte_export export ${REALM} ${OUTPUT_XML_FILE}"]
+CMD ["sh","/app/run_export.sh"]

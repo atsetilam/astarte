@@ -15,7 +15,7 @@ info:
     Astarte's Realm Management API is the main mechanism to configure a Realm.
     It allows installing and managing Interfaces, Triggers and any configuration
     of the Realm itself.
-  version: 1.2.0-dev
+  version: 1.3.0-dev
   title: Astarte Realm Management API
   contact:
     email: info@ispirata.com
@@ -124,10 +124,20 @@ paths:
       tags:
         - interface
       summary: Get interface list
-      description: Get a list of all installed interface names.
+      description: Get a list of all installed interfaces. By default a list of interface names 
+        is returned. The complete interface definitions list can be optionally retrieved rather than interfaces names list using
+        the `detailed` option.
       operationId: getInterfaceList
       security:
         - JWT: []
+      parameters:
+        - name: detailed
+          in: query
+          description: If true, interface definitions are returned instead of just names.
+          required: false
+          schema:
+            type: boolean
+            default: false
       responses:
         '200':
           $ref: '#/components/responses/GetInterfaceList'
@@ -365,7 +375,7 @@ paths:
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
-          $ref: '#/components/responses/NotFound'
+          $ref: '#/components/responses/TriggerNotFound'
         '500':
           description: Internal Server Error.
     delete:
@@ -387,7 +397,7 @@ paths:
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
-          $ref: '#/components/responses/NotFound'
+          $ref: '#/components/responses/TriggerNotFound'
         '500':
           description: Internal Server Error.
   '/{realm_name}/policies':
@@ -457,7 +467,7 @@ paths:
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
-          $ref: '#/components/responses/NotFound'
+          $ref: '#/components/responses/TriggerDeliveryPolicyNotFound'
         '500':
           description: Internal Server Error.
     delete:
@@ -479,7 +489,7 @@ paths:
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
-          $ref: '#/components/responses/NotFound'
+          $ref: '#/components/responses/TriggerDeliveryPolicyNotFound'
         '409':
           $ref: '#/components/responses/TriggerDeliveryPolicyCurrentlyUsedError'
         '500':
@@ -531,7 +541,9 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/GenericError'
+            oneOf:
+              - $ref: '#/components/schemas/AuthorizationPathNotMatchedError'
+              - $ref: '#/components/schemas/GenericError'
           example:
             errors:
               detail: Forbidden
@@ -747,6 +759,15 @@ components:
               mappings:
                 type:
                   - is invalid
+    TriggerNotFound:
+      description: Requested trigger was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+          example:
+            errors:
+              detail: Trigger not found
     TriggerValidationError:
       description: The provided trigger configuration is not valid.
       content:
@@ -785,24 +806,34 @@ components:
           example:
             errors:
               detail: is invalid
-    NotFound:
-      description: Resource not found
+    TriggerDeliveryPolicyNotFound:
+      description: Requested trigger delivery policy was not found
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/GenericError'
           example:
             errors:
-              detail: Not found
+              detail: Trigger policy not found
     Unauthorized:
-      description: Authorization information is missing or invalid.
+      description: Token/Realm doesn't exist or operation not allowed.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/GenericError'
-          example:
-            errors:
-              detail: Unauthorized
+            oneOf:
+              - $ref: '#/components/schemas/MissingTokenError'
+              - $ref: '#/components/schemas/InvalidTokenError'
+              - $ref: '#/components/schemas/InvalidAuthPathError'
+              - $ref: '#/components/schemas/GenericError'
+    AuthorizationPathNotMatched:
+      description: Authorization path not matched.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/AuthorizationPathNotMatchedError'
     UpdateConflict:
       description: >-
         The updated interface is valid, but there's a conflict with the existing
@@ -1252,7 +1283,7 @@ components:
           description: >-
             The range of errors the handler refers to. Must be one of: 'any_error',
             'client_error', 'server_error' or a custom error range (e.g. '[418, 419, 420, 500]').
-        retry_strategy:
+        strategy:
           type: string
           enum:
           - discard
@@ -1260,7 +1291,7 @@ components:
           description: What Astarte must do if an HTTP error occurs when delivering errors the handler refers to.
       required:
         - 'on'
-        - retry_strategy
+        - strategy
       example:
         'on': any_error
         strategy: discard
@@ -1403,3 +1434,50 @@ components:
       properties:
         errors:
           type: object
+    MissingTokenError:
+      type: object
+      properties:
+        errors:
+          type: object
+          properties:
+            detail:
+              type: string
+      example:
+        errors:
+          detail: Missing authorization token
+
+    InvalidTokenError:
+      type: object
+      properties:
+        errors:
+          type: object
+          properties:
+            detail:
+              type: string
+      example:
+        errors:
+          detail: Invalid JWT token
+
+    InvalidAuthPathError:
+      type: object
+      properties:
+        errors:
+          type: object
+          properties:
+            detail:
+              type: string
+      example:
+        errors:
+          detail: Authorization failed due to an invalid path
+
+    AuthorizationPathNotMatchedError:
+      type: object
+      properties:
+        errors:
+          type: object
+          properties:
+            detail:
+              type: string
+      example:
+        errors:
+          detail: Unauthorized access to GET /api/v1/some_path. Please verify your permissions

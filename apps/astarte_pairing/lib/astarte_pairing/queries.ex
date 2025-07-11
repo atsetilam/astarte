@@ -23,7 +23,8 @@ defmodule Astarte.Pairing.Queries do
 
   alias CQEx.Query
   alias CQEx.Result
-
+  alias Astarte.Core.CQLUtils
+  alias Astarte.Pairing.Config
   require Logger
 
   @protocol_revision 1
@@ -78,7 +79,14 @@ defmodule Astarte.Pairing.Queries do
 
         [first_credentials_request: nil, first_registration: registration_timestamp] ->
           Logger.info("register request for existing unconfirmed device: #{inspect(extended_id)}")
-          do_register_device(client, device_id, credentials_secret, registration_timestamp, opts)
+
+          do_register_unconfirmed_device(
+            client,
+            device_id,
+            credentials_secret,
+            registration_timestamp,
+            opts
+          )
 
         [first_credentials_request: _timestamp, first_registration: _registration_timestamp] ->
           Logger.warning(
@@ -95,7 +103,7 @@ defmodule Astarte.Pairing.Queries do
   end
 
   def unregister_device(client, device_id) do
-    with :ok <- check_already_registered_device(client, device_id),
+    with :ok <- verify_already_registered_device(client, device_id),
          :ok <- do_unregister_device(client, device_id) do
       :ok
     else
@@ -109,7 +117,35 @@ defmodule Astarte.Pairing.Queries do
     end
   end
 
-  defp check_already_registered_device(client, device_id) do
+  def check_already_registered_device(realm_name, device_id) do
+    keyspace_name =
+      CQLUtils.realm_name_to_keyspace_name(realm_name, Config.astarte_instance_id!())
+
+    Xandra.Cluster.run(:xandra, fn conn ->
+      query = """
+      SELECT device_id
+      FROM #{keyspace_name}.devices
+      WHERE device_id=:device_id
+      """
+
+      with {:ok, prepared} <- Xandra.prepare(conn, query),
+           {:ok, page} <-
+             Xandra.execute(conn, prepared, %{"device_id" => device_id},
+               uuid_format: :binary,
+               consistency: :quorum
+             ) do
+        case Enum.to_list(page) do
+          [%{"device_id" => _device_id}] ->
+            {:ok, true}
+
+          [] ->
+            {:ok, false}
+        end
+      end
+    end)
+  end
+
+  defp verify_already_registered_device(client, device_id) do
     statement = """
     SELECT device_id
     FROM devices
@@ -301,6 +337,53 @@ defmodule Astarte.Pairing.Queries do
     end
   end
 
+  defp do_register_unconfirmed_device(
+         client,
+         device_id,
+         credentials_secret,
+         registration_timestamp,
+         opts
+       ) do
+    statement = """
+    UPDATE devices
+    SET
+      first_registration = :first_registration,
+      credentials_secret = :credentials_secret,
+      inhibit_credentials_request = :inhibit_credentials_request,
+      protocol_revision = :protocol_revision,
+      introspection = :introspection,
+      introspection_minor = :introspection_minor
+
+    WHERE device_id = :device_id
+    """
+
+    {introspection, introspection_minor} =
+      opts
+      |> Keyword.get(:initial_introspection, [])
+      |> build_initial_introspection_maps()
+
+    query =
+      Query.new()
+      |> Query.statement(statement)
+      |> Query.put(:device_id, device_id)
+      |> Query.put(:first_registration, registration_timestamp)
+      |> Query.put(:credentials_secret, credentials_secret)
+      |> Query.put(:inhibit_credentials_request, false)
+      |> Query.put(:protocol_revision, 0)
+      |> Query.put(:introspection, introspection)
+      |> Query.put(:introspection_minor, introspection_minor)
+      |> Query.consistency(:quorum)
+
+    case Query.call(client, query) do
+      {:ok, _res} ->
+        :ok
+
+      error ->
+        Logger.warning("DB error: #{inspect(error)}")
+        {:error, :database_error}
+    end
+  end
+
   defp build_initial_introspection_maps(initial_introspection) do
     Enum.reduce(initial_introspection, {[], []}, fn introspection_entry, {majors, minors} ->
       %{
@@ -316,7 +399,7 @@ defmodule Astarte.Pairing.Queries do
   def check_astarte_health(consistency) do
     query = """
     SELECT COUNT(*)
-    FROM astarte.realms
+    FROM #{CQLUtils.realm_name_to_keyspace_name("astarte", Config.astarte_instance_id!())}.realms
     """
 
     with {:ok, %Xandra.Page{} = page} <-
@@ -353,7 +436,7 @@ defmodule Astarte.Pairing.Queries do
   defp do_fetch_device_registration_limit(conn, realm_name) do
     query = """
     SELECT device_registration_limit
-    FROM astarte.realms
+    FROM #{CQLUtils.realm_name_to_keyspace_name("astarte", Config.astarte_instance_id!())}.realms
     WHERE realm_name = :realm_name
     """
 
@@ -394,14 +477,17 @@ defmodule Astarte.Pairing.Queries do
 
   defp do_fetch_registered_devices_count(conn, realm_name) do
     # TODO move away from interpolation like this once NoaccOS' PR is merged
+    keyspace_name =
+      CQLUtils.realm_name_to_keyspace_name(realm_name, Config.astarte_instance_id!())
+
     query = """
     SELECT COUNT(*)
-    FROM #{realm_name}.devices
+    FROM #{keyspace_name}.devices
     """
 
     with {:ok, prepared} <- Xandra.prepare(conn, query),
          {:ok, page} <-
-           Xandra.execute(conn, prepared, %{"realm_name" => realm_name}, consistency: :one) do
+           Xandra.execute(conn, prepared, %{}, consistency: :one) do
       [%{"count" => value}] = Enum.to_list(page)
       {:ok, value}
     else

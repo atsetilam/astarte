@@ -10,11 +10,11 @@ defmodule Doc.MixProject do
 
     [
       app: :doc,
-      version: "1.2.0-dev",
+      version: "1.3.0-dev",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      name: "Astarte",
+      name: "Clea Astarte",
       homepage_url: "https://docs.astarte-platform.org/astarte/#{source_version}/",
       source_url: "https://github.com/astarte-platform/astarte",
       docs: docs()
@@ -29,7 +29,7 @@ defmodule Doc.MixProject do
   defp docs do
     [
       main: "001-intro_user",
-      logo: "images/mascot.png",
+      logo: "images/clea_bw.png",
       # It's in the docs repo root
       javascript_config_path: "../common_vars.js",
       extras: Path.wildcard("pages/*/*.md"),
@@ -41,7 +41,7 @@ defmodule Doc.MixProject do
         "User Guide": ~r"/user/",
         "Administrator Guide": ~r"/administrator/",
         Tutorials: ~r"/tutorials/",
-        "REST API Reference": ~r"/api/"
+        "API Reference": ~r"/api/"
       ],
       groups_for_modules: [
         "App Engine": ~r"Astarte.AppEngine",

@@ -35,7 +35,6 @@ defmodule Astarte.AppEngine.API.Rooms.Room do
   alias Astarte.Core.Device
   alias Astarte.DataAccess.Database
   alias Astarte.AppEngine.API.Rooms.Queries
-
   require Logger
 
   # API

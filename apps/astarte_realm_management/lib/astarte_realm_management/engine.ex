@@ -471,12 +471,23 @@ defmodule Astarte.RealmManagement.Engine do
     end
   end
 
+  def get_detailed_interfaces_list(realm_name) do
+    _ = Logger.debug("Get detailed interfaces list.")
+
+    with {:ok, client} <- Database.connect(realm: realm_name) do
+      Queries.get_detailed_interfaces_list(client)
+    end
+  end
+
   def get_jwt_public_key_pem(realm_name) do
     _ = Logger.debug("Get JWT public key PEM.")
 
+    keyspace_name =
+      CQLUtils.realm_name_to_keyspace_name(realm_name, Config.astarte_instance_id!())
+
     cqex_options =
       Config.cqex_options!()
-      |> Keyword.put(:keyspace, realm_name)
+      |> Keyword.put(:keyspace, keyspace_name)
 
     with {:ok, client} <-
            DatabaseClient.new(
@@ -491,9 +502,12 @@ defmodule Astarte.RealmManagement.Engine do
   end
 
   def update_jwt_public_key_pem(realm_name, jwt_public_key_pem) do
+    keyspace_name =
+      CQLUtils.realm_name_to_keyspace_name(realm_name, Config.astarte_instance_id!())
+
     cqex_options =
       Config.cqex_options!()
-      |> Keyword.put(:keyspace, realm_name)
+      |> Keyword.put(:keyspace, keyspace_name)
 
     with {:ok, client} <-
            DatabaseClient.new(
@@ -824,9 +838,12 @@ defmodule Astarte.RealmManagement.Engine do
   end
 
   defp get_database_client(realm_name) do
+    keyspace_name =
+      CQLUtils.realm_name_to_keyspace_name(realm_name, Config.astarte_instance_id!())
+
     cqex_options =
       Config.cqex_options!()
-      |> Keyword.put(:keyspace, realm_name)
+      |> Keyword.put(:keyspace, keyspace_name)
 
     DatabaseClient.new(
       Config.cassandra_node!(),
